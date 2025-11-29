@@ -11,9 +11,11 @@ try:
 except ImportError:
     pass
 
-app = FastAPI()
+# prefix at /github-api
+app = FastAPI(root_path="/github-api")
 
 GITHUB_API_URL = "https://api.github.com/repos/{owner}/{repo}"
+GITHUB_RELEASES_SUFFIX = "releases"
 GITHUB_HEADERS = lambda token: {"Authorization": f"token {token}"} if token else {}
 
 class RepoInfo(BaseModel):
@@ -43,7 +45,7 @@ def get_github_repo_info(owner: str, repo: str, token: Optional[str] = None):
     data = resp.json()
 
     # Fetch releases info
-    releases_url = f"https://api.github.com/repos/{owner}/{repo}/releases"
+    releases_url = f"{GITHUB_API_URL.format(owner=owner, repo=repo)}/{GITHUB_RELEASES_SUFFIX}"
     releases_resp = requests.get(releases_url, headers=headers)
     total_downloads = 0
     releases_amount = 0
