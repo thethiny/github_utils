@@ -1,6 +1,8 @@
+
 import os
 import time
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import requests
@@ -11,8 +13,18 @@ try:
 except ImportError:
     pass
 
+
 # prefix at /github-api
 app = FastAPI(root_path="/github-api")
+
+# Add CORS middleware to allow all origins
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 GITHUB_API_URL = "https://api.github.com/repos/{owner}/{repo}"
 GITHUB_RELEASES_SUFFIX = "releases"
